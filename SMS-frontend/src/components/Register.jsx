@@ -75,7 +75,7 @@ const githubLogin = () => {
   return (
     <div className='mx-auto align-center w-full md:w-[600px] m-9'>
         {success &&<div className='bg-emerald-500 text-2xl text-emerald-900 text-center font-bold'>Contact Saved Successfully</div>}
-      <div className='p-8 bg-purple-300 text-black flex flex-col'>
+      <div className='p-8  bg-gradient-to-br from-violet-600 via-pink-200 to-violet-600 text-black flex flex-col'>
 
         <input className='w-full border rounded p-2 my-2'type='text' onChange={handleChange} value={info.username} name='username' 
         placeholder='Enter Username'></input>
@@ -91,7 +91,7 @@ const githubLogin = () => {
         'Enter Password'></input>
         {passwordError && <div className='text-red-700'>* Invalid Password</div>}
 
-        <button onClick={submit} className='cursor-pointer px-4 w-45 mx-auto py-2 mt-5 bg-purple-900 text-xl rounded text-white font-semibold'>Submit</button>
+        <button onClick={submit} className='cursor-pointer px-4 w-45 mx-auto py-2 mt-5  bg-gradient-to-r from-purple-900 to-purple-600 text-xl rounded text-white font-semibold'>Submit</button>
         <div onClick={googleLogin} className='flex justify-around my-4'>
             <div className='flex  bg-white p-2 rounded cursor-pointer'>
                 <img className='h-10 w-10' src={google} alt='google'/>

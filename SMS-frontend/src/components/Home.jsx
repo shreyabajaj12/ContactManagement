@@ -68,7 +68,7 @@ console.log(Newusername)
     }
 
   return (
-    <div className=' bg-purple-300 w-full min-h-screen'>
+    <div className=' bg-gradient-to-br from-purple-400 via-pink-200 to-violet-600 w-full min-h-screen'>
       <Header username={Newname}/>
 <div className='w-full max-w-[1240px] bg-purple-900 justify-end h-12 rounded p-4 flex mt-5 items-center mx-auto'> 
      <div onClick={add} className='bg-green-500 w-45 text-xl font-bold mx-2 text-center rounded h-8 cursor-pointer'>Add Contacts</div>
@@ -79,14 +79,14 @@ console.log(Newusername)
             contacts.map((contact,index)=>(
             <div key={index} className="p-2 border mb-2  bg-purple-400 mt-3 rounded flex justify-between ">
             <div className='flex items-center'>
-                <img className='h-12 w-12' src={user} alt='user'/>
+                <img className='h-13 w-13' src={`https://api.dicebear.com/9.x/adventurer/svg?seed=`+index} alt={user}/>
                 <div>
                 <p className='text-xl font-bold px-5 text-purple-950'>{contact.name}</p>
                 <p className='px-5 text-black-700'>{contact.email}</p>
                 </div>
             </div>
             <div className='flex items-center'>
-                <div className='h-12 w-35 p-3 bg-gray-600 text-white rounded flex items-center justify-center '>{contact.phone}</div>
+                <div className='h-12 w-35 p-3 bg-gradient-to-r from-rose-400 to bg-orange-400 text-white rounded flex items-center justify-center '>{contact.phone}</div>
                 <div className='h-10 w-10 mx-3 cursor-pointer'><img src={view}/></div>
                 <div onClick={()=>edit(contact)} className='h-10 w-10 mx-3 cursor-pointer'><img src={edits}/></div>
                 <div onClick={()=>remove(contact.Id)} className='h-10 w-10 mx-3 cursor-pointer'><img src={del}/></div>

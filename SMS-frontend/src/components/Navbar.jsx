@@ -6,7 +6,7 @@ const Navbar = ({isSignUp,onToggle}) => {
         <h1 className='font-bold text-[6vw] lg:text-5xl'>ContactManagement</h1>
         <button 
         onClick={onToggle}
-        className='cursor-pointer px-4 py-2 bg-purple-900 text-xl rounded text-white font-semibold'>
+        className='cursor-pointer px-4 py-2 bg-gradient-to-r from-purple-900 to-purple-700 text-xl rounded text-white font-semibold'>
             {isSignUp?"Sign Here":"Login Here"}
         </button>
     

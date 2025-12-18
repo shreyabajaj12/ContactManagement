@@ -16,8 +16,8 @@ const Navbar = ({username}) => {
     <>
     <div className='flex justify-between items-center h-24 max-w-[1240px] mx-auto px-4 text-black border-b'>
         <h1 className='font-bold text-[6vw] lg:text-5xl'>ContactManagement</h1>
-        <div onClick={nav} className='cursor-pointer flex flex-col'>
-            <img className='h-12 w-12' src={logo} alt='logo' />
+        <div onClick={nav} className='cursor-pointer flex flex-col items-center'>
+            <img className='h-12 w-12 ' src={logo} alt='logo' />
             <p className='text-center'>{username}</p>
         </div>
     </div>

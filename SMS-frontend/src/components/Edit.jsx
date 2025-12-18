@@ -35,11 +35,13 @@ function Edit() {
     }
       
   return (
-    <div className='bg-[#FCE7F3] min-h-screen w-full'>
+    <div className='bg-gradient-to-bl from-purple-400 via-pink-200
+    to-purple-400 min-h-screen w-full'>
         <Header username={currname} />
 
         <div className='mx-auto border rounded align-center w-full md:w-[1000px] m-9'>
-        <div className='p-8 bg-white text-black flex flex-col'>
+        <div className='p-8 bg-gradient-to-br from-purple-200 via-pink-200
+    to-purple-200 text-black flex flex-col'>
             <div className='flex items-center'>
             <label className='mr-2 w-30'>Name</label>
             <input 
@@ -80,7 +82,7 @@ function Edit() {
             value={data.email}
             placeholder='Enter Email Add.' /></div>
 
-            <button onClick={save} className='cursor-pointer px-4 w-45 mx-auto py-2 mt-5 bg-purple-800 text-xl rounded text-white font-semibold'>Save</button>
+            <button onClick={save} className='cursor-pointer px-4 w-45 mx-auto py-2 mt-5 bg-gradient-to-r from-purple-900 to-purple-700 text-xl rounded text-white font-semibold'>Save</button>
         </div>
       </div>
     </div>
