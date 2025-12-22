@@ -1,10 +1,18 @@
 package com.boot.smsbackend.Contact;
 
 import com.boot.smsbackend.Login.LoginRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
+@Slf4j
 @RestController()
 @RequestMapping("/contact/{username}")
 public class ContactController {
@@ -54,12 +62,22 @@ public class ContactController {
         contactRepository.delete(cont);
         return ResponseEntity.ok().body("Contact deleted successfully");
     }
-    @GetMapping("/")
-    public ResponseEntity<?> getAllContacts(@PathVariable String username) {
+    @GetMapping()
+    public ResponseEntity<?> getAllContacts(@PathVariable String username, @RequestParam(value = "page",defaultValue = "0")int page, @RequestParam(value="size",defaultValue = "5") int size, @RequestParam(value="sortBy",defaultValue = "name") String sortBy, @RequestParam(value = "direction",defaultValue = "asc") String direction) {
         if(loginRepository.findByUsername(username)!=null) {
-            return ResponseEntity.ok().body(contactRepository.findByLogin_Username(username));
+            Sort sort=direction.equals("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
+            var pageable= PageRequest.of(page,size,sort);
+            Page<Contact> temp=contactRepository.findByLogin_Username(username,pageable);
+            System.out.println(temp.getTotalPages());
+            return ResponseEntity.ok().body(contactRepository.findByLogin_Username(username,pageable));
         }
         else return ResponseEntity.status(404).body("Contact not found");
     }
-
+//    search handler
+    @GetMapping("/search")
+    public ResponseEntity<?>getContactSearch(@PathVariable String username, @RequestParam(value="field",defaultValue = "name")String field,@RequestParam(value="keyword",defaultValue = "")String keyword) {
+        log.info(field);
+        log.info(keyword);
+        return null;
+    }
 }
