@@ -75,9 +75,27 @@ public class ContactController {
     }
 //    search handler
     @GetMapping("/search")
-    public ResponseEntity<?>getContactSearch(@PathVariable String username, @RequestParam(value="field",defaultValue = "name")String field,@RequestParam(value="keyword",defaultValue = "")String keyword) {
-        log.info(field);
-        log.info(keyword);
-        return null;
+    public ResponseEntity<?>getContactSearch(@PathVariable String username,
+                                             @RequestParam(value="field",defaultValue = "name")String field,
+                                             @RequestParam(value="keyword",defaultValue = "")String keyword,
+                                             @RequestParam(value = "page",defaultValue = "0")int page,
+                                             @RequestParam(value="size",defaultValue = "5") int size,
+                                             @RequestParam(value="sortBy",defaultValue = "name") String sortBy,
+                                             @RequestParam(value = "direction",defaultValue = "asc") String direction) {
+        if(loginRepository.findByUsername(username)!=null){
+            Sort sort=direction.equals("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
+            var pageable= PageRequest.of(page,size,sort);
+            if(field==null ||field.equals("name")) {
+                return ResponseEntity.ok().body(contactRepository.findByLogin_UsernameAndNameContaining(username,keyword,pageable));
+            }
+            else if(field.equals("email")) {
+                return ResponseEntity.ok().body(contactRepository.findByLogin_UsernameAndEmailContaining(username,keyword,pageable));
+            }
+            else if(field.equals("phone")) {
+                return ResponseEntity.ok().body(contactRepository.findByLogin_UsernameAndPhoneContaining(username,keyword,pageable));
+
+            }
+        }
+        return ResponseEntity.status(404).body("Contact not found");
     }
 }
