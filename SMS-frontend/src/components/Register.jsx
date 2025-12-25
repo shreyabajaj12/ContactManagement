@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import api from "../service/api"
 import github from "../assets/github.png"
 import google from "../assets/google.png"
@@ -11,6 +11,11 @@ const Register = () => {
         password:"",
         name:""}
     )
+
+    useEffect(() => {
+    api.post("/auth/logout");
+    }, []);
+
     const handleChange=(e)=>{
         //  console.log(e.target.name, e.target.value);
         setInfo({

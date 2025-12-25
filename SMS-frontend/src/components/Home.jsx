@@ -30,7 +30,7 @@ const Home = () => {
         const fetchMe = async () => {
             try {
                 const res = await api.get("/auth/me");
-                console.log(res);
+                // console.log(res);
                 setNewname(res.data.name);
                 setNewusername(res.data.username);
             } catch (e) {
@@ -133,8 +133,8 @@ const Home = () => {
             console.log("error"+e);
         }
     }
-    const edit = (contact) => {
-        navigate("/edit", { state: { username: Newusername, currname: Newname, info: contact } });
+    const edit = (id) => {
+        navigate("/edit", { state: { username: Newusername, currname: Newname,id:id} });
     }
 
     // Searching based on the match result
@@ -250,7 +250,7 @@ const Home = () => {
 
                                 <div className='h-12 w-35 p-3 bg-gradient-to-r from-pink-500 to bg-violet-800 text-white rounded flex items-center justify-center '>{contact.phone}</div>
                                 <div className='h-10 w-10 mx-3 cursor-pointer border bg-purple-500 rounded-full'><img src={view} /></div>
-                                <div onClick={() => edit(contact)} className='h-10 w-10 mx-3 bg-purple-500  cursor-pointer'><img src={edits} /></div>
+                                <div onClick={() => edit(contact.Id)} className='h-10 w-10 mx-3 bg-purple-500  cursor-pointer'><img src={edits} /></div>
                                 <div onClick={() => remove(contact.Id)} className='h-10 w-10 mx-3 bg-purple-500 cursor-pointer'><img src={del} /></div>
 
                             </div>

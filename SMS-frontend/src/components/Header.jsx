@@ -1,6 +1,7 @@
 import { replace, useNavigate } from 'react-router-dom';
 import logo from '../assets/account.png'
 import React, { useState } from 'react';
+import api from '../service/api'
 
 const Navbar = ({username}) => {
     const [open,setOpen]=useState(false);
@@ -8,7 +9,8 @@ const Navbar = ({username}) => {
         setOpen(!open);
     }
     const navigate=useNavigate();
-    const handleLogout=()=>{
+    const handleLogout=async()=>{
+      await api.post("/auth/logout");
       localStorage.removeItem('token');
       navigate('/',{replace:true});
     }

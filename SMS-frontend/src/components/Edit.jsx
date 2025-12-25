@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Header from './Header'
 import api from '../service/api'
@@ -7,13 +7,31 @@ import { useNavigate } from 'react-router-dom';
 function Edit() {
     const navigate=useNavigate();
     const location=useLocation();
-    const {username,currname,info}=location.state ||{};
+    const {username,currname,id}=location.state ||{};
     const [data,setData]=useState({
-      name:info.name,
-      address:info.address,
-      phone:info.phone,
-      email:info.email
+      name:"",
+      address:"",
+      phone:"",
+      email:""
     })
+    useEffect(()=>{
+       const info=async()=>{
+        try{
+          const res=await api.get("/contact/get/"+id);
+          setData(res.data);
+        }
+        catch(e){
+          console.log(e);
+          navigate(-1);
+        }
+        
+      }
+      if(id){
+        info();
+      }
+    },[id,navigate]);
+   
+    
     const handleChange=(e)=>{
         setData({
           ...data,
@@ -24,7 +42,7 @@ function Edit() {
     const save=async()=>{
       try{
         // console.log("/contact/"+username+"/put/"+info.Id)
-        const res=await api.put("/contact/"+username+"/put/"+info.Id,data);
+        const res=await api.put("/contact/put/"+id,data);
       }
       catch(e){
         console.log("error"+e);

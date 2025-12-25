@@ -54,6 +54,16 @@ public class ContactController {
         contactRepository.save(cont);
         return ResponseEntity.ok(cont);
     }
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getContact(Authentication authentication,@PathVariable String id) {
+        String username = authentication.getName();
+        var user=loginRepository.findByUsername(username);
+        if(user==null) {
+            return ResponseEntity.status(404).body("Contact not found");
+        }
+        Contact cont=contactRepository.findByLogin_UsernameAndId(username,id);
+        return ResponseEntity.ok(cont);
+    }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteContact(Authentication authentication,@PathVariable String id ) {
         String username = authentication.getName();

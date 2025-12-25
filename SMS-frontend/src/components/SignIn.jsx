@@ -1,8 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import api from "../service/api"
 import Home from './Home';
 import { useNavigate } from 'react-router-dom';
 const Register = () => {
+
+  useEffect(() => {
+    api.post("/auth/logout");
+  }, []);
+
+
   const navigate = useNavigate();
     const [info,setInfo]=useState(
         {username:"",
