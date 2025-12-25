@@ -2,6 +2,7 @@ package com.boot.smsbackend.Security;
 
 import com.boot.smsbackend.dto.LoginResponseDto;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +30,20 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         System.out.println(oAuth2User);
         String registrationId = token.getAuthorizedClientRegistrationId();
+
         ResponseEntity<LoginResponseDto> loginResponse=oAuth2Service.handleOAuth2LoginRequest(oAuth2User,registrationId);
-        response.setStatus(loginResponse.getStatusCode().value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write(objectMapper.writeValueAsString(loginResponse.getBody()));
+//        response.setStatus(loginResponse.getStatusCode().value());
+//        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//        response.getWriter().write(objectMapper.writeValueAsString(loginResponse.getBody()));
         LoginResponseDto body = loginResponse.getBody();
-        String redirectUrl="http://localhost:5173/home"+
-                "?token="+body.getToken()+"&username="+body.getUsername()+"&name="+body.getName();
+
+        Cookie jwtCookie =new Cookie("token",body.getToken());
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(false);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(7*24*60*60);
+        String redirectUrl="http://localhost:5173/oauth2/callback";
+        response.addCookie(jwtCookie);
         response.sendRedirect(redirectUrl);
 
     }

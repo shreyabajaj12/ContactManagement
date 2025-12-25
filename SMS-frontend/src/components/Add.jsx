@@ -22,7 +22,7 @@ const Add = () => {
     }
     const submit=async()=>{
         try{
-            const res=await api.post("/contact/"+username+"/add",info);
+            const res=await api.post("/contact"+"/add",info);
             setSuccess(true);
             // console.log(res.data)
 

@@ -25,13 +25,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 //        log.info("incoming request :{}", request.getRequestURI());
-
+        String token = null;
+        if(request.getCookies()!=null){
+            for(var cookie : request.getCookies()){
+                if("token".equals(cookie.getName())){
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+    if(token == null) {
         String requestTokenHeader=request.getHeader("Authorization");
         if(requestTokenHeader==null || !requestTokenHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-        String token=requestTokenHeader.split("Bearer ")[1];
+        token=requestTokenHeader.split("Bearer ")[1];
+    }
         String username=authUtil.getUsernameFromToken(token);
 
         if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null) {
@@ -44,7 +54,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.startsWith("/auth/")
+        return path.startsWith("/auth/login")
+                || path.startsWith("/auth/signup")
                 || path.startsWith("/oauth2/")
                 || path.equals("/login");
     }

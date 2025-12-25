@@ -5,9 +5,10 @@ const api=axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  // 🚫 NEVER attach token to auth endpoints
+  // NEVER attach token to auth endpoints
   if (
-    config.url?.startsWith("/auth/") ||
+    config.url?.startsWith("/auth/login") ||
+    config.url?.startsWith("/auth/signup") ||
     config.url?.startsWith("/oauth2") ||
     config.url === "/login"
   ) {
@@ -16,7 +17,7 @@ api.interceptors.request.use((config) => {
 
   const token = localStorage.getItem("token");
 
-  // ✅ attach token ONLY if it exists
+  //  attach token ONLY if it exists
   if (token && token.trim() !== "") {
     config.headers.Authorization = `Bearer ${token}`;
   }

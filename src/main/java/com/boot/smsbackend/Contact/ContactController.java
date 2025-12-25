@@ -9,12 +9,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 
 @Slf4j
 @RestController()
-@RequestMapping("/contact/{username}")
+@RequestMapping("/contact")
 public class ContactController {
     @Autowired
     private ContactRepository contactRepository;
@@ -22,7 +23,8 @@ public class ContactController {
     private LoginRepository loginRepository;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addContact(@RequestBody Contact contact, @PathVariable String username) {
+    public ResponseEntity<?> addContact(Authentication authentication,@RequestBody Contact contact) {
+        String username = authentication.getName();
         var user=loginRepository.findByUsername(username);
         if(user==null) {
             return ResponseEntity.notFound().build();
@@ -37,7 +39,8 @@ public class ContactController {
         return ResponseEntity.ok(newContact);
     }
     @PutMapping("/put/{id}")
-    public ResponseEntity<?> updateContact(@RequestBody Contact contact, @PathVariable String username, @PathVariable String id) {
+    public ResponseEntity<?> updateContact(Authentication authentication,@RequestBody Contact contact, @PathVariable String id) {
+        String username = authentication.getName();
         var user=loginRepository.findByUsername(username);
         if(user==null) {
             return ResponseEntity.status(404).body("Contact not found");
@@ -52,7 +55,8 @@ public class ContactController {
         return ResponseEntity.ok(cont);
     }
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteContact(@PathVariable String username,@PathVariable String id ) {
+    public ResponseEntity<?> deleteContact(Authentication authentication,@PathVariable String id ) {
+        String username = authentication.getName();
         var user=loginRepository.findByUsername(username);
         if(user==null) {
             return ResponseEntity.status(404).body("Contact not found");
@@ -63,25 +67,29 @@ public class ContactController {
         return ResponseEntity.ok().body("Contact deleted successfully");
     }
     @GetMapping()
-    public ResponseEntity<?> getAllContacts(@PathVariable String username, @RequestParam(value = "page",defaultValue = "0")int page, @RequestParam(value="size",defaultValue = "5") int size, @RequestParam(value="sortBy",defaultValue = "name") String sortBy, @RequestParam(value = "direction",defaultValue = "asc") String direction) {
+    public ResponseEntity<?> getAllContacts(Authentication authentication, @RequestParam(value = "page",defaultValue = "0")int page, @RequestParam(value="size",defaultValue = "5") int size, @RequestParam(value="sortBy",defaultValue = "name") String sortBy, @RequestParam(value = "direction",defaultValue = "asc") String direction) {
+        String username = authentication.getName();
         if(loginRepository.findByUsername(username)!=null) {
             Sort sort=direction.equals("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
             var pageable= PageRequest.of(page,size,sort);
             Page<Contact> temp=contactRepository.findByLogin_Username(username,pageable);
             System.out.println(temp.getTotalPages());
+            log.info("Fetching contacts for username = {}", username);
             return ResponseEntity.ok().body(contactRepository.findByLogin_Username(username,pageable));
         }
         else return ResponseEntity.status(404).body("Contact not found");
+
     }
 //    search handler
     @GetMapping("/search")
-    public ResponseEntity<?>getContactSearch(@PathVariable String username,
+    public ResponseEntity<?>getContactSearch(Authentication authentication,
                                              @RequestParam(value="field",defaultValue = "name")String field,
                                              @RequestParam(value="keyword",defaultValue = "")String keyword,
                                              @RequestParam(value = "page",defaultValue = "0")int page,
                                              @RequestParam(value="size",defaultValue = "5") int size,
                                              @RequestParam(value="sortBy",defaultValue = "name") String sortBy,
                                              @RequestParam(value = "direction",defaultValue = "asc") String direction) {
+        String username = authentication.getName();
         if(loginRepository.findByUsername(username)!=null){
             Sort sort=direction.equals("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
             var pageable= PageRequest.of(page,size,sort);

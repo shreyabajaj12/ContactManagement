@@ -5,6 +5,7 @@ import Home from'./components/Home';
 import Add from './components/Add'
 import Edit from './components/Edit'
 import { useAuth } from './components/useAuth';
+import OAuthCallback from './components/OAuthCallback'
 
 const App = () => {
   const {user,loading}=useAuth();
@@ -16,6 +17,7 @@ const App = () => {
       <Route path='/home'element={<Home/>}/>
       <Route path='/add' element={<Add/>}/>
       <Route path='/edit' element={<Edit/>}/>
+      <Route path="/oauth2/callback" element={<OAuthCallback />} />
     </Routes>
     </BrowserRouter>
   )

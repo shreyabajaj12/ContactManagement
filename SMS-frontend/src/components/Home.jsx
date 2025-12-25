@@ -16,14 +16,33 @@ import 'animate.css';
 import { ToastContainer, toast } from 'react-toastify';
 const Home = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const { username, name } = location.state || {};
-    const params = new URLSearchParams(location.search);
-    const Newusername = username ?? params.get("username");
+    // const location = useLocation();
+    // const { username, name } = location.state || {};
+    // const params = new URLSearchParams(location.search);
+    // const Newusername = username ?? params.get("username");
     const [result, setResult] = useState(null);
-    const Newname = name ?? params.get("name");
+    // const Newname = name ?? params.get("name");
     const [contacts, setContacts] = useState([]);
     const [showMail, setShowMail] = useState(false);
+    const [Newname, setNewname] = useState("");
+    const [Newusername,setNewusername]=useState("");
+    useEffect(() => {
+        const fetchMe = async () => {
+            try {
+                const res = await api.get("/auth/me");
+                console.log(res);
+                setNewname(res.data.name);
+                setNewusername(res.data.username);
+            } catch (e) {
+                navigate("/login");
+            }
+        };
+
+        fetchMe();
+    }, []);
+
+
+
     const mail = (email) => {
         setShowMail(true);
         setInfo(prev => ({
@@ -37,8 +56,7 @@ const Home = () => {
     const [info, setInfo] = useState({
         from: "",
         to: "",
-        message: "",
-        sendername: Newusername
+        message: ""
     })
 
     const mailChange = (e) => {
@@ -88,11 +106,11 @@ const Home = () => {
     };
 
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const size = params.get("size") ?? 5;
+        // const params = new URLSearchParams(location.search);
+        const size = 5;
         const fetchAllContact = async () => {
             try {
-                const res = await api.get(`/contact/${Newusername}?page=${page ?? 0}&size=${size}`)
+                const res = await api.get(`/contact?page=${page ?? 0}&size=${size}`)
                 setResult(res.data);
                 setContacts(res.data.content || []);
 
@@ -101,14 +119,12 @@ const Home = () => {
                 console.log("error",e);
             }
         }
-        if (Newusername) {
-            fetchAllContact();
-        }
-    }, [Newusername, location.search, page])
+        fetchAllContact();
+    }, [Newusername,page])
 
     const remove = async (id) => {
         try {
-            const res = await api.delete("/contact/" + Newusername + "/delete/" + id);
+            const res = await api.delete("/contact"+ "/delete/" + id);
             setContacts(prevContacts =>
                 prevContacts.filter(contact => contact.Id !== id)
             );
@@ -133,7 +149,7 @@ const Home = () => {
         });
 
         const res = await api.get(
-            `/contact/${Newusername}/search?field=${searchBy}&keyword=${value}`
+            `/contact/search?field=${searchBy}&keyword=${value}`
         );
         setResult(res.data);
         setContacts(res.data.content); // assuming backend returns list
