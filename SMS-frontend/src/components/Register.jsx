@@ -46,7 +46,7 @@ const Register = () => {
             setNameError(true);
             valid=false;
         }
-        if(pass.length<8){
+        if(pass.length<5){
             setPasswordError(true);
             valid=false;
         }
@@ -94,15 +94,15 @@ const githubLogin = () => {
 
         <input className='w-full border rounded p-2 my-2'type='password'onChange={handleChange}value={info.password} name='password' placeholder=
         'Enter Password'></input>
-        {passwordError && <div className='text-red-700'>* Invalid Password</div>}
+        {passwordError && <div className='text-red-700'>* Password must be 5 characters</div>}
 
         <button onClick={submit} className='cursor-pointer px-4 w-45 mx-auto py-2 mt-5  bg-gradient-to-r from-purple-900 to-purple-600 text-xl rounded text-white font-semibold'>Submit</button>
-        <div onClick={googleLogin} className='flex justify-around my-4'>
-            <div className='flex  bg-white p-2 rounded cursor-pointer'>
+        <div className='sm:flex justify-around my-4'>
+            <div onClick={googleLogin}  className='flex  bg-white p-2 rounded cursor-pointer'>
                 <img className='h-10 w-10' src={google} alt='google'/>
                 <div className='p-2'>Sign in with Google</div>
             </div>
-            <div onClick={githubLogin} className='flex  bg-white p-2 rounded cursor-pointer'>
+            <div onClick={githubLogin} className='flex  bg-white p-2 rounded cursor-pointer sm:mt-0 mt-3'>
                 <img className='h-10 w-10' src={github} alt='github'/>
                 <div className='p-2'>Sign in with Github</div>
             </div>

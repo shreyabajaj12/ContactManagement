@@ -12,25 +12,32 @@ import del from '../assets/bin.png'
 import { useAuth } from './useAuth';
 import email from '../assets/message (1).png'
 import cross from '../assets/close-fill.png'
+import dots from '../assets/dots.png'
 import 'animate.css';
 import { ToastContainer, toast } from 'react-toastify';
+import View from "./View";
 const Home = () => {
     const navigate = useNavigate();
-    // const location = useLocation();
-    // const { username, name } = location.state || {};
-    // const params = new URLSearchParams(location.search);
-    // const Newusername = username ?? params.get("username");
     const [result, setResult] = useState(null);
-    // const Newname = name ?? params.get("name");
     const [contacts, setContacts] = useState([]);
     const [showMail, setShowMail] = useState(false);
     const [Newname, setNewname] = useState("");
-    const [Newusername,setNewusername]=useState("");
+    const [Newusername, setNewusername] = useState("");
+    const [viewOpen, setViewOpen] = useState(false);
+    const [viewId, setViewId] = useState(null);
+    const [menuOpenId, setMenuOpenId] = useState(null);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState
+        ({
+            id: null,
+            name: ""
+        });
+
+
     useEffect(() => {
         const fetchMe = async () => {
             try {
                 const res = await api.get("/auth/me");
-                // console.log(res);
                 setNewname(res.data.name);
                 setNewusername(res.data.username);
             } catch (e) {
@@ -41,6 +48,10 @@ const Home = () => {
         fetchMe();
     }, []);
 
+    const viewChange = (id) => {
+        setViewOpen(true);
+        setViewId(id);
+    }
 
 
     const mail = (email) => {
@@ -85,6 +96,7 @@ const Home = () => {
         }
     }
 
+
     const add = () => {
         navigate("/add", { state: { username: Newusername, name: Newname } })
     }
@@ -116,25 +128,25 @@ const Home = () => {
 
             }
             catch (e) {
-                console.log("error",e);
+                console.log("error", e);
             }
         }
         fetchAllContact();
-    }, [Newusername,page])
+    }, [Newusername, page])
 
     const remove = async (id) => {
         try {
-            const res = await api.delete("/contact"+ "/delete/" + id);
+            const res = await api.delete("/contact" + "/delete/" + id);
             setContacts(prevContacts =>
                 prevContacts.filter(contact => contact.Id !== id)
             );
         }
         catch (e) {
-            console.log("error"+e);
+            console.log("error" + e);
         }
     }
     const edit = (id) => {
-        navigate("/edit", { state: { username: Newusername, currname: Newname,id:id} });
+        navigate("/edit", { state: { username: Newusername, currname: Newname, id: id } });
     }
 
     // Searching based on the match result
@@ -200,13 +212,55 @@ const Home = () => {
                 </div>
 
 
-
                 <div className='flex'>
-                    <div onClick={add} className='bg-gradient-to-r from-green-500  to-lime-400 w-45 text-xl font-bold mx-2 text-center rounded h-8 cursor-pointer'>Add Contacts</div>
-                    <input onChange={look} value={searchChange.match} name="match" className='bg-white w-60 items-center rounded h-8 mx-2 p-2' placeholder='Search'></input>
+                    <div onClick={add} className='bg-gradient-to-r from-green-500  to-lime-400 w-20  sm:w-45 text-xl font-bold mx-2 text-center rounded h-8 cursor-pointer'><span className="sm:hidden">Add</span>
+                        <span className="hidden sm:inline">Add Contacts</span></div>
+                    <input onChange={look} value={searchChange.match} name="match" className='bg-white sm:w-60 w-20 items-center rounded h-8 mx-2 p-2' placeholder='Search'></input>
 
                 </div>
             </div>
+            {
+                viewOpen && <View viewOpen={viewOpen} setViewOpen={setViewOpen} id={viewId} />
+            }
+            {
+                openDelete &&
+                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40">
+                    <div
+                        className="
+      bg-black text-white rounded-xl p-6 text-lg
+      w-[60%] h-[45%]           
+      sm:w-[360px] sm:h-64    
+      md:w-[420px] md:h-60     
+      flex flex-col justify-between items-center
+    "
+                    >
+                        <div className="text-center">
+                            Are you sure you want to delete ?
+                        </div>
+
+                        <div className="text-center font-bold md:text-lg lg:text-xl text-red-400">
+                            {deleteTarget.name}
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                            <button onClick={async()=>{
+                                await remove(deleteTarget.id);
+                                setOpenDelete(false);
+                                setDeleteTarget({id:null,name:""})
+                            }} className="bg-gradient-to-r cursor-pointer from-green-500 to-lime-400 h-12 rounded-2xl font-semibold w-full sm:w-28">
+                                YES
+                            </button>
+                            <button onClick={() => {setOpenDelete(false);
+                                setDeleteTarget({id:null,name:""})}} className=" cursor-pointer bg-red-700 h-12 rounded-2xl font-semibold w-full sm:w-28">
+                                NO
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+
             {
                 showMail &&
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -242,18 +296,52 @@ const Home = () => {
                                 <img className='h-13 w-13' src={`https://api.dicebear.com/9.x/adventurer/svg?seed=` + index} alt={user} />
                                 <div>
                                     <p className='text-xl font-bold px-5 text-purple-950'>{contact.name}</p>
-                                    <p className='px-5 text-black-700'>{contact.email}</p>
+                                    <p className='px-5 text-black-700 sm:flex hidden'>{contact.email}</p>
+                                    <p className='px-5 text-black-700 sm:hidden flex'>{contact.phone}</p>
+
                                 </div>
                             </div>
-                            <div className='flex items-center'>
+                            <div className='sm:flex hidden items-center'>
                                 <div className='px-10' onClick={() => mail(contact.email)}><img className='w-10 h-10 cursor-pointer  bg-purple-500 rounded-full' src={email}></img> </div>
-
                                 <div className='h-12 w-35 p-3 bg-gradient-to-r from-pink-500 to bg-violet-800 text-white rounded flex items-center justify-center '>{contact.phone}</div>
-                                <div className='h-10 w-10 mx-3 cursor-pointer border bg-purple-500 rounded-full'><img src={view} /></div>
+                                <div onClick={() => viewChange(contact.Id)} className='h-10 w-10 mx-3 cursor-pointer border bg-purple-500 rounded-full'><img src={view} /></div>
                                 <div onClick={() => edit(contact.Id)} className='h-10 w-10 mx-3 bg-purple-500  cursor-pointer'><img src={edits} /></div>
-                                <div onClick={() => remove(contact.Id)} className='h-10 w-10 mx-3 bg-purple-500 cursor-pointer'><img src={del} /></div>
-
+                                <div onClick={() => {if (openDelete) return; setDeleteTarget({id:contact.Id,name:contact.name});setOpenDelete(true);}} className='h-10 w-10 mx-3 bg-purple-500 cursor-pointer'><img src={del} /></div>
                             </div>
+                            <div className="relative sm:hidden flex items-center">
+
+                                {/* Conditional menu */}
+                                {menuOpenId === contact.Id && (
+                                    <div className="absolute right-10 z-20 animate__bounceInRight animate__animated bg-gradient-to-r from-pink-300 to-violet-300 w-40 h-12 rounded-xl shadow-lg flex items-center justify-around">
+                                        <div onClick={() => viewChange(contact.Id)} className='h-7 w-7 mx-3 cursor-pointer'><img src={view} /></div>
+
+                                        <div onClick={() => edit(contact.Id)} className='h-7 w-7 mx-3  cursor-pointer'><img src={edits} /></div>
+
+                                        <div onClick={() => {
+                                            if (openDelete) return;
+                                            setDeleteTarget({ id: contact.Id, name: contact.name });
+                                            setOpenDelete(true);
+                                        }} className='h-7 w-7 mx-3 cursor-pointer'><img src={del} /></div>
+
+                                    </div>
+                                )}
+
+                                {/* Email icon */}
+                                <div className="pr-2" onClick={() => mail(contact.email)}>
+                                    <img className="w-10 h-10 bg-purple-500 cursor-pointer rounded-full" src={email} />
+                                </div>
+
+                                {/* Dots icon */}
+                                <img
+                                    className="w-10 h-10 cursor-pointer"
+                                    src={dots}
+                                    alt="functions"
+                                    onClick={() =>
+                                        setMenuOpenId(menuOpenId === contact.Id ? null : contact.Id)
+                                    }
+                                />
+                            </div>
+
                         </div>
                     )
                     )

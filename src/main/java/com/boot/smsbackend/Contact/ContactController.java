@@ -34,6 +34,9 @@ public class ContactController {
         newContact.setEmail(contact.getEmail());
         newContact.setPhone(contact.getPhone());
         newContact.setAddress(contact.getAddress());
+        newContact.setWebsite(contact.getWebsite());
+        newContact.setGithub(contact.getGithub());
+        newContact.setLinkedin(contact.getLinkedin());
         newContact.setLogin(user);
         contactRepository.save(newContact);
         return ResponseEntity.ok(newContact);
@@ -51,6 +54,9 @@ public class ContactController {
         cont.setEmail(contact.getEmail());
         cont.setPhone(contact.getPhone());
         cont.setAddress(contact.getAddress());
+        cont.setLinkedin(contact.getLinkedin());
+        cont.setGithub(contact.getGithub());
+        cont.setWebsite(contact.getWebsite());
         contactRepository.save(cont);
         return ResponseEntity.ok(cont);
     }

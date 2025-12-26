@@ -23,12 +23,11 @@ const Navbar = ({username}) => {
             <p className='text-center'>{username}</p>
         </div>
     </div>
-{open && <div className="relative max-w-[1240px] mx-auto">
-  <div className="bg-black text-white mt-0 w-40 absolute top-0 right-0 h-50 ml-auto rounded-xl flex flex-col items-center justify-evenly">
+{open && <div className="relative max-w-[1240px] mx-auto z-70">
+  <div className="bg-black text-white mt-0 w-40 absolute top-0 right-0 h-40 ml-auto rounded-xl flex flex-col items-center justify-evenly">
     <div className='cursor-pointer'>Profile</div>
-    <div className='cursor-pointer'>Settings</div>
-    <div className='cursor-pointer'>Help Center</div>
-    <div onClick={handleLogout} className='bg-red-700 w-30 text-center rounded-xl h-8 cursor-pointer'>Logout</div>
+    <div className='cursor-pointer hover:underline'><a target="_blank" href="https://github.com/shreyabajaj12/ContactManagement">Source Code</a></div>
+    <div onClick={handleLogout} className='bg-red-700 hover:bg-red-800 w-30 text-center rounded-xl h-8 cursor-pointer'>Logout</div>
   </div>
 </div>}
     </>
