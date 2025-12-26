@@ -69,11 +69,11 @@ const Register = () => {
         }
     }
     const googleLogin = () => {
-  window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  window.location.href = "https://contact-management-latest.onrender.com/oauth2/authorization/google";
 };
 
 const githubLogin = () => {
-  window.location.href = "http://localhost:8080/oauth2/authorization/github";
+  window.location.href = "https://contact-management-latest.onrender.com/oauth2/authorization/github";
 };
 
   
