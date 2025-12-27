@@ -19,7 +19,7 @@ public class AuthUtil {
     private SecretKey getSecretKey(){
         return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
     }
-    String generateAccessToken(Login login){
+    public String generateAccessToken(Login login){
         return Jwts.builder()
                 .subject(login.getUsername())
                 .claim("loginId",login.getId().toString())

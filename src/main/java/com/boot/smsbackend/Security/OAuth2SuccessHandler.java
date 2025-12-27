@@ -31,19 +31,25 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         System.out.println(oAuth2User);
         String registrationId = token.getAuthorizedClientRegistrationId();
 
-        ResponseEntity<LoginResponseDto> loginResponse=oAuth2Service.handleOAuth2LoginRequest(oAuth2User,registrationId);
+        oAuth2Service.handleOAuth2LoginRequest(
+                oAuth2User,
+                registrationId,
+                response
+        );
+
+//        ResponseEntity<LoginResponseDto> loginResponse=oAuth2Service.handleOAuth2LoginRequest(oAuth2User,registrationId);
 //        response.setStatus(loginResponse.getStatusCode().value());
 //        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 //        response.getWriter().write(objectMapper.writeValueAsString(loginResponse.getBody()));
-        LoginResponseDto body = loginResponse.getBody();
-
-        Cookie jwtCookie =new Cookie("token",body.getToken());
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(false);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(7*24*60*60);
+//        LoginResponseDto body = loginResponse.getBody();
+//
+//        Cookie jwtCookie =new Cookie("token",body.getToken());
+//        jwtCookie.setHttpOnly(true);
+//        jwtCookie.setSecure(false);
+//        jwtCookie.setPath("/");
+//        jwtCookie.setMaxAge(7*24*60*60);
         String redirectUrl="http://localhost:5173/oauth2/callback";
-        response.addCookie(jwtCookie);
+//        response.addCookie(jwtCookie);
         response.sendRedirect(redirectUrl);
 
     }
