@@ -28,9 +28,7 @@ const Register = () => {
           const res=await api.post("/auth/login",info);
           setSuccess(true);
           // console.log(res.data+"////");
-          const{token,username,name}=res.data;
-          console.log(token)
-          localStorage.setItem("token",token)
+          const{username,name}=res.data;
           navigate("/home",{state:{username:username,name:name}});
         }
         catch(e){

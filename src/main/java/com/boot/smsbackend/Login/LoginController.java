@@ -2,6 +2,7 @@ package com.boot.smsbackend.Login;
 
 import com.boot.smsbackend.Security.AuthService;
 import com.boot.smsbackend.dto.LoginRequestDto;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    private ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto){
-        return ResponseEntity.ok(authService.login(loginRequestDto));
+    private ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response){
+        return ResponseEntity.ok(authService.login(loginRequestDto,response));
     }
 }

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -42,11 +43,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         token=requestTokenHeader.split("Bearer ")[1];
     }
-        String username=authUtil.getUsernameFromToken(token);
+        String username=null;
+    try{
+        username=authUtil.getUsernameFromToken(token);
+    }
+    catch (Exception e){
+        filterChain.doFilter(request, response);
+        return;
+    }
+
 
         if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null) {
             Login login=loginRepository.findByUsername(username);
+            if (login == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             UsernamePasswordAuthenticationToken authentication=new UsernamePasswordAuthenticationToken(login,null,login.getAuthorities());
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);

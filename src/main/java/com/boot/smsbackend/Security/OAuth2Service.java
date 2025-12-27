@@ -4,7 +4,9 @@ import com.boot.smsbackend.AuthProviderType;
 import com.boot.smsbackend.Login.Login;
 import com.boot.smsbackend.Login.LoginRepository;
 import com.boot.smsbackend.dto.LoginResponseDto;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class OAuth2Service {
     private final AuthUtil authUtil;
     private final LoginRepository loginRepository;
-    public ResponseEntity<LoginResponseDto> handleOAuth2LoginRequest(OAuth2User oAuth2User, String registrationId) {
+    public ResponseEntity<LoginResponseDto> handleOAuth2LoginRequest(OAuth2User oAuth2User, String registrationId, HttpServletResponse response) {
         AuthProviderType providerType=authUtil.getAuthProviderTypeFromRegistrationId(registrationId);
         String providerUsername=oAuth2User.getAttribute("email");
         if(providerUsername==null){
@@ -40,7 +42,17 @@ public class OAuth2Service {
             throw new BadCredentialsException("this email already exists with provider type "+providerType);
         }
         Login login1=loginRepository.findByUsername(providerUsername);
-        LoginResponseDto loginResponseDto=new LoginResponseDto(authUtil.generateAccessToken(login1),login1.getUsername(),login1.getName());
-        return ResponseEntity.ok(loginResponseDto);
+        String token = authUtil.generateAccessToken(login1);
+        ResponseCookie cookie = ResponseCookie.from("token", token)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(60 * 60)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
+        return ResponseEntity.ok(new LoginResponseDto(null, login1.getUsername(), login1.getName())
+        );
     }
 }
